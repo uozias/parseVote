@@ -9,7 +9,65 @@
 
 
 //対象urlのリスト
-var urlList = new Array("./003.htm"
+var urlList = new Array("./s/01.htm",
+"./s/02.htm",
+"./s/03.htm",
+"./s/04.htm",
+"./s/05.htm",
+"./s/06.htm",
+"./s/07.htm",
+"./s/08.htm",
+"./s/09.htm",
+"./s/10.htm",
+"./s/11.htm",
+"./s/12.htm",
+"./s/13.htm",
+"./s/14.htm",
+"./s/15.htm",
+"./s/16.htm",
+"./s/17.htm",
+"./s/18.htm",
+"./s/19.htm",
+"./s/20.htm",
+"./s/21.htm",
+"./s/22.htm",
+"./s/23.htm",
+"./s/24.htm",
+"./s/25.htm",
+"./s/26.htm",
+"./s/27.htm",
+"./s/28.htm",
+"./s/29.htm",
+"./s/30.htm",
+"./s/31.htm",
+"./s/32.htm",
+"./s/33.htm",
+"./s/34.htm",
+"./s/35.htm",
+"./s/36.htm",
+"./s/37.htm",
+"./s/38.htm",
+"./s/39.htm",
+"./s/40.htm",
+"./s/41.htm",
+"./s/42.htm",
+"./s/43.htm",
+"./s/44.htm",
+"./s/45.htm",
+"./s/46.htm",
+"./s/47.htm",
+"./p/1.htm",
+"./p/2.htm",
+"./p/3.htm",
+"./p/4.htm",
+"./p/5.htm",
+"./p/9.htm",
+"./p/11.htm",
+"./p/18.htm",
+"./p/20.htm",
+"./p/22.htm",
+"./p/100.htm",
+"./p/101.htm"
 );
 
 
@@ -30,6 +88,8 @@ var parseHtml = function(requestUrl, targetDOM, callbackFunc){
 	    		var innerTable = new Array();
 	    		
 	    		var trs = $(this).find("tr");
+	    		var hirei
+	    		var senkyoku
 	    		$.each(trs, function(i, val){
 	    			var valObj = $(val);
 	    			switch (i){
@@ -40,11 +100,17 @@ var parseHtml = function(requestUrl, targetDOM, callbackFunc){
 	    					innerTable["party"] = valObj.find("td:first").text();
 	    					break;
 	    				case 4:
-	    					innerTable["vote"]  = valObj.find("td").text();
+	    					hirei =  valObj.find("td").text();
+	    					break;
+	    				case 5:
+	    					senkyoku =  valObj.find("td").text();
 	    					break;
 	    			}
 	    		});
-	    		
+	    		innerTable["vote"]  = new Number(hirei);
+	    		if (isNaN(innerTable["vote"])){
+	    			innerTable["vote"] = senkyoku;
+	    		}
 
 	    		if($(this).find("div.photo strong.win").length > 0){
 	    			innerTable["win"] = "当";
