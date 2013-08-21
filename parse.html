@@ -1,0 +1,96 @@
+<html>
+<head>
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<script type="text/javascript" src="./jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+
+
+//対象urlのリスト
+var urlList = new Array("./003.htm"
+);
+
+
+//htmlをぱーすする
+var parseHtml = function(requestUrl, targetDOM, callbackFunc){
+	return $.ajax({
+	    type: "GET",
+	    url: requestUrl,
+	    dataType: "html"
+	}).then(
+	    function(data){
+	    	var dataObj = $(data);
+	    	var resultTable = new Array();	 
+
+	    	//このへんは読み込む対象のhtmlの構造に依存
+	    	var area = dataObj.find("dl.main dt").text() + dataObj.find("dl.main dd.select").text() ;
+	    	dataObj.find("div.candidate").each(function(){
+	    		var innerTable = new Array();
+	    		
+	    		var trs = $(this).find("tr");
+	    		$.each(trs, function(i, val){
+	    			var valObj = $(val);
+	    			switch (i){
+	    				case 0:
+	    					innerTable["name"] = valObj.find("td").text();
+	    					break;
+	    				case 1:
+	    					innerTable["party"] = valObj.find("td:first").text();
+	    					break;
+	    				case 4:
+	    					innerTable["vote"]  = valObj.find("td").text();
+	    					break;
+	    			}
+	    		});
+	    		
+
+	    		if($(this).find("div.photo strong.win").length > 0){
+	    			innerTable["win"] = "当";
+	    		}else{
+	    			innerTable["win"] = "落";
+	    		}
+	    		
+	    		innerTable["area"] = area;
+
+	    		resultTable.push(innerTable);
+	    	})
+	    	callbackFunc(resultTable, targetDOM);
+	    },
+	    function(xhr){
+	    	alert(xhr);
+	    }
+	);
+
+}
+
+//テーブルのhtmlを描画する
+var writeTable = function(resultTable, targetDOM){
+	for (var i = 0; i < resultTable.length; i++ ){
+		targetDOM.append("<tr><td>"+resultTable[i]["name"]+"</td> \
+			<td>"+resultTable[i]["party"]+"</td> \
+			<td>"+resultTable[i]["vote"]+"</td> \
+			<td>"+resultTable[i]["win"]+"</td> \
+			<td>"+resultTable[i]["area"]+"</td> \
+			</tr>");
+	}
+}
+
+
+//処理開始
+$(function(){
+  for (var i = 0; i < urlList.length; i++){
+  	parseHtml(urlList[i], $("table#result"), writeTable);
+  }
+  
+});
+
+</script>
+<table id="result">
+
+
+<table/>
+
+</body>	
+</html
